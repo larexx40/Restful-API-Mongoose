@@ -25,22 +25,22 @@ leaderRouter.route('/')
 
 leaderRouter.route('/:leaderId')
 .get( (req,res,next) => {
-    res.end('Will send details of the dish: ' + req.params.leaderId +' to you!');
+    res.end('Will send details of the leader: ' + req.params.leaderId +' to you!');
 })
 
 .post( (req, res, next) => {
   res.statusCode = 403;
-  res.end('POST operation not supported on /dishes/'+ req.params.leaderId);
+  res.end('POST operation not supported on /leaders/'+ req.params.leaderId);
 })
 
 .put( (req, res, next) => {
-  res.write('Updating the dish: ' + req.params.leaderId + '\n');
-  res.end('Will update the dish: ' + req.body.name + 
+  res.write('Updating the leaders: ' + req.params.leaderId + '\n');
+  res.end('Will update the leaders: ' + req.body.name + 
         ' with details: ' + req.body.description);
 })
 
 .delete( (req, res, next) => {
-    res.end('Deleting dish: ' + req.params.leaderId);
+    res.end('Deleting leader: ' + req.params.leaderId);
 });
 
 
