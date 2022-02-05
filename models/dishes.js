@@ -30,11 +30,11 @@ const dishSchema = new Schema({
         required: true
     }, 
     label:{
-        type: Currency,
+        type: String,
         default: ""
     }, 
     price:{
-        type: String,
+        type: Currency,
         required: true,
         min: 0
     }, 
