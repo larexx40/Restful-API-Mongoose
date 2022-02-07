@@ -16,7 +16,7 @@ dishRouter.route('/')
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
       res.json(dishes)
-    }, (err)=> nexy(err))
+    }, (err)=> next(err))
     .catch((err)=> next(err))
   })
 
@@ -27,7 +27,7 @@ dishRouter.route('/')
       res.statusCode = 200
       res.setHeader('Content-Type', 'application/json')
       res.json(dish)
-    }, (err)=> nexy(err))
+    }, (err)=> next(err))
     .catch((err)=> next(err))
   })
 

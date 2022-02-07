@@ -1,26 +1,47 @@
 const express= require('express')
-const bodyParser=require('body-parser')
+const bodyParser=require('body-parser');
+const Leaders = require('../models/leaders');
+const { json } = require('express/lib/response');
 const leaderRouter = express.Router()
 
 leaderRouter.use(bodyParser.json())
 leaderRouter.route('/')
-.all( (req,res,next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-  })
+//get all the leaders in the database as ajson file
   .get((req,res,next) => {
-      res.end('Will send all the leaders to you!');
+    Leaders.find({})
+    .then((leaders) => {
+      res.statusCode=200
+      res.json(leaders)
+    }, (err)=>next(err))
+    .catch((err) =>next(err));
   })
+
+// post leaders document
   .post((req, res, next) => {
-   res.end('Will add the leader: ' + req.body.name + ' with details: ' + req.body.description);
+  Leaders.create(req.body)
+  .then((Leaders) => {
+    res.statusCode=200
+    res.json(Leaders)
+    Leaders.save()
+  }, (err)=>next(err))
+  .catch((err) =>next(err) );
   })
+
+  //PUT/edit cannot be performed a whole json document
   .put((req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /leader');
   })
-   .delete((req, res, next) => {
-      res.end('Deleting all leaders');
+
+  .delete((req, res, next) => {
+    Leaders.remove()
+    Leaders.save()
+    .then(() => {
+      res.statusCode= 200
+      res.end('All leaders Deleted');
+    }, (err)=>next(err))
+    .catch((err) => next(err));
+    
   });
 
 leaderRouter.route('/:leaderId')

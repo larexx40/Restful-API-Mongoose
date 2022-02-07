@@ -1,25 +1,47 @@
 const bodyParser = require("body-parser");
 const express = require("express");
+const Promotions = require("../models/promotions");
 const promoRouter = express.Router()
 
 promoRouter.use(bodyParser.json())
 promoRouter.route('/')
-.all( (req,res,next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-  })
+// GET all document in json format
   .get((req,res,next) => {
-      res.end('Will send all the promotions to you!');
+    Promotions.find({})
+    .then((promotions) => {
+      res.statusCode=200
+      res.end("<html><body><h1>VIEW Promotions document </h1></body></html>")
+      res.json(promotions)
+    },(err)=>next(err))
+    .catch((err) => next(err));
   })
+  
+  //POST all promotion documents
   .post((req, res, next) => {
+    Promotions.create(req.body)
+    .then((promotions) => {
+      res.statusCode=200
+      res.end("<html><body><h1>Promotions document created</h1></body></html>")
+      res.json(promotions)
+    }, (err)=>next(err))
+    .catch((err) =>next(err));
    res.end('Will add the promotion: ' + req.body.name + ' with details: ' + req.body.description);
   })
+// you cannot perform editing on the whole document
   .put((req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /promotion');
   })
-   .delete((req, res, next) => {
+
+  //DELETE the whole promotion json document
+  .delete((req, res, next) => {
+    Promotions.remove()
+    .then(() => {
+      res.statusCode=200
+      Promotions.save()
+    }, (err)=>next(err))
+    .catch((err) =>next(err));
+
       res.end('Deleting all promotions');
   });
 
