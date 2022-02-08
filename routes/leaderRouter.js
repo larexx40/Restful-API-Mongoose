@@ -34,8 +34,7 @@ leaderRouter.route('/')
   })
 
   .delete((req, res, next) => {
-    Leaders.remove()
-    Leaders.save()
+    Leaders.remove({})
     .then(() => {
       res.statusCode= 200
       res.end('All leaders Deleted');

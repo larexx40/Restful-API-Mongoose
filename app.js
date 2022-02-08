@@ -8,7 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter')
 var leaderRouter = require('./routes/leaderRouter')
-var promoRouter = require('./routes/leaderRouter')
+var promotionRouter = require('./routes/promotionRouter')
 
 // MongoDB connect
 const mongoose = require('mongoose')
@@ -38,7 +38,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/dishes', dishRouter)
 app.use('/leaders', leaderRouter)
-app.use('/promotions', promoRouter)
+app.use('/promotions', promotionRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -5,7 +5,7 @@
 "description"
 
 const mongoose = require('mongoose')
-require(mongoose-currency).loadType(mongoose)
+require('mongoose-currency').loadType(mongoose)
 var Currency = mongoose.Types.Currency
 
 
