@@ -30,13 +30,18 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+
+//to use cookie parse require a sign key
+app.use(cookieParser('12347890'));
 
 
-//decleare auth function or basic authentication
+//using cookies for authetication
 function auth(req, res, next){
-  console.log(req.headers);
-  var authHeader = req.headers.authorization
+  console.log(req.signedCookies);
+  //if the user has no signed cookies in its request header, 
+  //he is not autorized, hence pass through the basic authentication
+  if (!req.signedCookies.user) {
+    var authHeader = req.headers.authorization
   if (!authHeader) {
     var err = new Error('You are not Authenticated')
     err.status=401
@@ -47,12 +52,23 @@ function auth(req, res, next){
   var username = auth[0]
   var password = auth[1]
   if (username=='admin' && password=='admin') {
+    res.cookie('user', 'admin', {signed: true})
     next()//i.e execute next program
   } else {
     var err = new Error('You are not Authenticated \n invalid username and password')
     err.status=401
     res.setHeader('WWW-Authenticate', 'Basic')
     next(err)
+  }
+  } else {
+    if (req.signedCookies.user=='admin') {
+      next()
+    }
+    else{
+      var err = new Error('You are not authenticated')
+      err.status=400
+      next(err)
+    }
   }
 }
 
