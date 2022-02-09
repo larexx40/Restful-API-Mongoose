@@ -31,6 +31,33 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+
+//decleare auth function or basic authentication
+function auth(req, res, next){
+  console.log(req.headers);
+  var authHeader = req.headers.authorization
+  if (!authHeader) {
+    var err = new Error('You are not Authenticated')
+    err.status=401
+    res.setHeader('WWW-Authenticate', 'Basic')
+    next(err)
+  }
+  var auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':')
+  var username = auth[0]
+  var password = auth[1]
+  if (username=='admin' && password=='admin') {
+    next()//i.e execute next program
+  } else {
+    var err = new Error('You are not Authenticated \n invalid username and password')
+    err.status=401
+    res.setHeader('WWW-Authenticate', 'Basic')
+    next(err)
+  }
+}
+
+//autorization first before he load the pages or router
+app.use(auth)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Router setup

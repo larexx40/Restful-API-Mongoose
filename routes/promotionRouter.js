@@ -42,6 +42,7 @@ promoRouter.route('/')
       res.end('Deleting all promotions');
   });
 
+  
 // CRUD operations on a field in the document using its id as reference point
 promoRouter.route('/:promoId')
 .get( (req,res,next) => {
@@ -51,7 +52,6 @@ promoRouter.route('/:promoId')
     res.json(promotion)
   }, (err)=>next(err))
   .catch((err) => next(err));
-    res.end('Will send details of the promotion: ' + req.params.promoId +' to you!');
 })
 
 //findbyidaandupdate
@@ -76,8 +76,40 @@ promoRouter.route('/:promoId')
     res.json(promotion)
   }, (err)=>next(err))
   .catch((err) => next(err));
+});
 
-    res.end('Deleting promotion: ' + req.params.promoId);
+promoRouter.route('/:promoId')
+.get( (req,res,next) => {
+  Promotions.findById(res.params.promoId)
+  .then((promotion) => {
+    res.status=200
+    res.json(promotion)
+  }, (err)=>next(err))
+  .catch((err) => next(err));
+})
+
+//findbyidaandupdate
+.post( (req, res, next) => {
+  res.statusCode = 403;
+  res.end('POST operation not supported on /promotion/'+ req.params.promoId);
+})
+
+.put( (req, res, next) => {
+  Promotions.findByIdAndUpdate(req.params.promoId, req.body)
+  .then((promotion) => {
+    res.statusCode=200
+    res.json(promotion)
+  }, (err)=>next(err))
+  .catch((err) =>next(err));
+})
+
+.delete( (req, res, next) => {
+  Promotions.findByIdAndRemove(req.params.promoId)
+  .then((promotion) => {
+    res.statusCode=200
+    res.json(promotion)
+  }, (err)=>next(err))
+  .catch((err) => next(err));
 });
 
 module.exports = promoRouter
