@@ -14,6 +14,12 @@ var promotionRouter = require('./routes/promotionRouter')
 var session = require('express-session')
 var FileStore = require('session-file-store')(session)
 
+//passport to handle authentication
+const passport = require('passport');
+const authenticate = require('./authenticate')
+
+
+
 // MongoDB connect
 const mongoose = require('mongoose')
 const Dishes = require('./models/dishes');
@@ -46,32 +52,28 @@ app.use(session({
   store: new FileStore()
 }))
 
+//initialize passport and session
+app.use(passport.initialize())
+app.use(passport.session())
+
 //load homepage first, then userRouter for login/logout/reg
 //get authenticated first before access to other router
 app.use('/', indexRouter);
 app.use('/users', userRouter);
 
-//using cookies for authetication
+//using passport for authetication
 function auth(req, res, next){
-  console.log(req.session);
-  //if the user has no signed cookies in its request header, 
-  //he is not autorized, hence pass through the basic authentication
-  if (!req.session.user) {
+  console.log(req.user);
+  
+  if (!req.user) {
     var err = new Error('You are not Authenticated')
     err.status=403
     //res.setHeader('WWW-Authenticate', 'Basic')
     return next(err)
   }
   else{
-    if (req.session.user === 'authenticated') {
       next()
     }
-    else{
-      var err = new Error('You are not authenticated')
-      err.status=403
-      return next(err)
-    }
-  }
 }
     
 
