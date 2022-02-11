@@ -1,9 +1,3 @@
-"name"
-"image"
-"label"
-"price"
-"description"
-
 const mongoose = require('mongoose')
 require('mongoose-currency').loadType(mongoose)
 var Currency = mongoose.Types.Currency
