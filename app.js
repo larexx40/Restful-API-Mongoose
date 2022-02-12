@@ -1,7 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
@@ -10,20 +9,18 @@ var dishRouter = require('./routes/dishRouter')
 var leaderRouter = require('./routes/leaderRouter')
 var promotionRouter = require('./routes/promotionRouter')
 
-//Express-session to handle authentication
-var session = require('express-session')
-var FileStore = require('session-file-store')(session)
 
 //passport to handle authentication
 const passport = require('passport');
 const authenticate = require('./authenticate')
+//add the config file
+const config = require('./config');
 
 
 
 // MongoDB connect
 const mongoose = require('mongoose')
-const Dishes = require('./models/dishes');
-const url = 'mongodb://localhost:27017/confusion'
+const url = config.mongoUrl;
 const connect = mongoose.connect(url)
 
 connect.then((db)=>{
@@ -41,48 +38,18 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//to use cookie parse require a sign key
-//app.use(cookieParser('12347890'));
-//using express-session instead of signed cookie
-app.use(session({
-  name: 'session-id',
-  secret: '12347890',
-  saveUninitialized: false,
-  resave: false,
-  store: new FileStore()
-}))
 
 //initialize passport and session
 app.use(passport.initialize())
-app.use(passport.session())
 
 //load homepage first, then userRouter for login/logout/reg
 //get authenticated first before access to other router
 app.use('/', indexRouter);
 app.use('/users', userRouter);
 
-//using passport for authetication
-function auth(req, res, next){
-  console.log(req.user);
-  
-  if (!req.user) {
-    var err = new Error('You are not Authenticated')
-    err.status=403
-    //res.setHeader('WWW-Authenticate', 'Basic')
-    return next(err)
-  }
-  else{
-      next()
-    }
-}
-    
-
-//autorization first before he load other router
-app.use(auth)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Router setup
-
 app.use('/dishes', dishRouter)
 app.use('/leaders', leaderRouter)
 app.use('/promotions', promotionRouter)

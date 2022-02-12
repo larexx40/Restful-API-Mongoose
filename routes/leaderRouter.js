@@ -3,9 +3,11 @@ const bodyParser=require('body-parser');
 const Leaders = require('../models/leaders');
 const { json } = require('express/lib/response');
 const leaderRouter = express.Router()
+var authenticate = require('../authenticate')
 
 leaderRouter.use(bodyParser.json())
 leaderRouter.route('/')
+//perform authentication for CRUD operation except get
 //get all the leaders in the database as ajson file
   .get((req,res,next) => {
     Leaders.find({})
@@ -17,7 +19,7 @@ leaderRouter.route('/')
   })
 
 // post leaders document
-  .post((req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
   Leaders.create(req.body)
   .then((Leaders) => {
     res.statusCode=200
@@ -28,12 +30,12 @@ leaderRouter.route('/')
   })
 
   //PUT/edit cannot be performed a whole json document
-  .put((req, res, next) => {
+  .put(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /leader');
   })
 
-  .delete((req, res, next) => {
+  .delete(authenticate.verifyUser, (req, res, next) => {
     Leaders.remove({})
     .then(() => {
       res.statusCode= 200
@@ -48,18 +50,18 @@ leaderRouter.route('/:leaderId')
     res.end('Will send details of the leader: ' + req.params.leaderId +' to you!');
 })
 
-.post( (req, res, next) => {
+.post(authenticate.verifyUser, (req, res, next) => {
   res.statusCode = 403;
   res.end('POST operation not supported on /leaders/'+ req.params.leaderId);
 })
 
-.put( (req, res, next) => {
+.put(authenticate.verifyUser, (req, res, next) => {
   res.write('Updating the leaders: ' + req.params.leaderId + '\n');
   res.end('Will update the leaders: ' + req.body.name + 
         ' with details: ' + req.body.description);
 })
 
-.delete( (req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
     res.end('Deleting leader: ' + req.params.leaderId);
 });
 

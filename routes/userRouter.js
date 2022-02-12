@@ -3,6 +3,9 @@ const bodyParser = require('body-parser')
 const Users = require('../models/users');
 const passport = require('passport');
 
+//to create authentication token
+var authenticate= require('../authenticate')
+
 var userRouter = express.Router();
 userRouter.use(bodyParser.json())
 
@@ -32,9 +35,12 @@ userRouter.post('/signup' , (req , res, next)=>{
 
 //do basic authetication, and validate username and password from db
 userRouter.post('/login', passport.authenticate('local') , (req , res)=>{
-    res.statusCode=200
+  
+  //after login, a token will be generated
+  var token = authenticate.getToken({_id: req.user._id})
+  res.statusCode=200
     res.setHeader('Content-Type', 'text/plain')
-    res.end('you are succesfully Logged in')
+    res.json({success: true, token: token, status: 'you are succesfully Logged in'})
    
 })
 
