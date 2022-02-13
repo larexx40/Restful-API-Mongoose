@@ -6,7 +6,10 @@ var Currency = mongoose.Types.Currency
 var commentSchema = new Schema({
     rating:{type: Number,min:1, max: 7, required: true},
     comment:{type:String, required:true},
-    author:{type:String, required:true}
+    author:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 }, {
     timestamps:true
 })

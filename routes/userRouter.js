@@ -17,6 +17,7 @@ userRouter.get('/', function(req, res, next) {
 });
 
 //register username and password
+//first verify if username exist
 userRouter.post('/signup' , (req , res, next)=>{
   Users.register(new Users({username: req.body.username}), 
   req.body.password, (err, user)=>{
@@ -25,10 +26,24 @@ userRouter.post('/signup' , (req , res, next)=>{
       res.setHeader('Conent-Type', 'application/json')
       res.json({err: err})
     } else {
-      passport.authenticate('local')(req, res, ()=>{
-        res.statusCode=200
-        res.json({success: true, status: "Registration Successful"})
+      //include firstname and password in your body
+      if (req.body.firstname) 
+        user.firstname= req.body.firstname
+      if (req.body.lastname)
+        user.lastname= req.body.lastname;
+      user.save((err, user)=>{
+        if(err){
+          res.statusCode=500
+          res.setHeader('Conent-Type', 'application/json')
+          res.json({err: err})
+          return;
+        } 
+        passport.authenticate('local')(req, res, ()=>{
+          res.statusCode=200
+          res.json({success: true, status: "Registration Successful"})
+        })      
       })
+     
     }
   })
 })
