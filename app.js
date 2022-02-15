@@ -3,12 +3,13 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 
+
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/userRouter');
 var dishRouter = require('./routes/dishRouter')
 var leaderRouter = require('./routes/leaderRouter')
 var promotionRouter = require('./routes/promotionRouter')
-
+var uploadRouter = require('./routes/uploadRouter')
 
 //passport to handle authentication
 const passport = require('passport');
@@ -53,6 +54,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dishes', dishRouter)
 app.use('/leaders', leaderRouter)
 app.use('/promotions', promotionRouter)
+app.use('/imageUpload', uploadRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

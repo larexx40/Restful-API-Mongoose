@@ -12,9 +12,17 @@ userRouter.use(bodyParser.json())
 
 
 /* GET users listing. */
-userRouter.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+userRouter.get('/', (req, res, next)=> {
+Users.find({})
+.then((users)=>{
+  res.statusCode=200
+  console.log('display registered user');
+  res.setHeader('Content-Type', 'application/json')
+  res.json(users)
+  
+}, (err)=>next(err))
+.catch((err)=>next(err))
+})
 
 //register username and password
 //first verify if username exist
@@ -54,8 +62,9 @@ userRouter.post('/login', passport.authenticate('local') , (req , res)=>{
   //after login, a token will be generated
   var token = authenticate.getToken({_id: req.user._id})
   res.statusCode=200
-    res.setHeader('Content-Type', 'text/plain')
-    res.json({success: true, token: token, status: 'you are succesfully Logged in'})
+  console.log('welcome user ' +req.user.username)
+  res.setHeader('Content-Type', 'text/plain')
+  res.json({success: true, token: token, status: 'you are succesfully Logged in'})
    
 })
 
