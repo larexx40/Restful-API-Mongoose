@@ -33,6 +33,7 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
                 return done(err, false)
             }
             else if (user){
+
                 return done(null, user)
             }
             else{
@@ -43,3 +44,13 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
 
 //to authenticate request using jwt as the strategy
 exports.verifyUser = passport.authenticate('jwt',{session: false})
+
+//verify if it is an admin
+exports.verifyAdmin = (req, res, next)=>{
+    console.log(req.user);
+    if(req.user && req.user.admin){
+        return next()
+    }
+    return res.status(401).json({err: "You are not an ADMIN "})
+
+}

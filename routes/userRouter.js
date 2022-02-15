@@ -60,7 +60,7 @@ userRouter.post('/signup' , (req , res, next)=>{
 userRouter.post('/login', passport.authenticate('local') , (req , res)=>{
   
   //after login, a token will be generated
-  var token = authenticate.getToken({_id: req.user._id})
+  var token = authenticate.getToken({_id: req.user._id, admin: req.user.admin})
   res.statusCode=200
   console.log('welcome user ' +req.user.username)
   res.setHeader('Content-Type', 'text/plain')
