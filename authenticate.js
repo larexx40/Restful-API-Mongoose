@@ -8,6 +8,8 @@ var  ExtractJwt = require('passport-jwt').ExtractJwt
 var jwt = require('jsonwebtoken')
 var config = require('./config')
 
+var FacebookTokenStrategy = require('passport-facebook-token')
+
 exports.local = passport.use(new LocalStrategy(User.authenticate()))
 
 //using session to track login
@@ -54,3 +56,30 @@ exports.verifyAdmin = (req, res, next)=>{
     return res.status(401).json({err: "You are not an ADMIN "})
 
 }
+
+exports.facebookPassport = passport.use(new FacebookTokenStrategy({
+    clientID: config.facebook.clientId,
+    clientSecret: config.facebook.clientSecret
+}, (accessToken, refreshToken, profile, done)=>{
+    User.findOrCreate({facebookId: profile.id}, (err, user)=>{
+        if (err){
+            return done(err, false)
+        }
+        if(!err && user !== null){
+            //already registered with oauth2
+            return done(null, user)
+        }
+        else{
+            user = new User({username: profile.displayName});
+            user.facebookId = profile.id;
+            user.firstname = profile.name.givenName;
+            user.lastname = profile.name.familyName;
+            user.save((err, user)=>{
+                if (err)
+                    return done(err, false)
+                else
+                    return done(null, user)
+            })
+        }
+    })
+}))

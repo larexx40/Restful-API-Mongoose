@@ -54,10 +54,10 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
+  if (error.syscall !== 'listen') {1
     throw error;
   }
-
+ 
   var bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
