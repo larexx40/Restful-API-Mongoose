@@ -6,8 +6,7 @@ const authenticate = require('../authenticate')
 
 promoRouter.use(bodyParser.json())
 promoRouter.route('/')
-//perform CRUD operation by authenticated user except get
-// GET all document in json format
+// GET all promotion document in json format
   .get((req,res,next) => {
     Promotions.find({})
     .then((promotions) => {

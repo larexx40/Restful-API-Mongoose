@@ -26,6 +26,7 @@ dishRouter.route('/')
 
   .post(authenticate.verifyUser, (req, res, next) => {
    Dishes.create(req.body)
+   .populate('comments.author')
     .then((dish)=>{
       console.log("Dish created ", dish);
       res.statusCode = 200

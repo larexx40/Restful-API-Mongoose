@@ -10,6 +10,7 @@ var dishRouter = require('./routes/dishRouter')
 var leaderRouter = require('./routes/leaderRouter')
 var promotionRouter = require('./routes/promotionRouter')
 var uploadRouter = require('./routes/uploadRouter')
+var favouriteRouter = require('./routes/favouriteRouter');
 
 //passport to handle authentication
 const passport = require('passport');
@@ -55,6 +56,7 @@ app.use('/dishes', dishRouter)
 app.use('/leaders', leaderRouter)
 app.use('/promotions', promotionRouter)
 app.use('/imageUpload', uploadRouter)
+app.use('/favourites', favouriteRouter)
 
 
 // catch 404 and forward to error handler

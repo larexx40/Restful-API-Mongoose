@@ -7,8 +7,7 @@ var authenticate = require('../authenticate')
 
 leaderRouter.use(bodyParser.json())
 leaderRouter.route('/')
-//perform authentication for CRUD operation except get
-//get all the leaders in the database as ajson file
+//get all the leaders in the database as a json file
   .get((req,res,next) => {
     Leaders.find({})
     .then((leaders) => {
